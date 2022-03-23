@@ -27,22 +27,6 @@ pipeline {
             }
         }
 
-        stage("SonarQube Code Analysis") {
-            steps {
-                withSonarQubeEnv(installationName: 'SonarQube-Server-kwi'){
-                    sh "mvn verify sonar:sonar -Dsonar.projectName=${PROJECT}-kwi"
-                }
-            }
-        }
-
-        stage('Quality Gate'){
-            steps {
-                timeout(time: 5, unit: 'MINUTES'){
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-
         stage("Docker Build") {
             steps {
                 sh "aws ecr get-login-password --region ${REGION} --profile keshaun | docker login --username AWS --password-stdin ${AWS_ID}.dkr.ecr.${REGION}.amazonaws.com"
