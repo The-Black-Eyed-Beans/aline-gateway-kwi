@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${Project}-deployment
+  labels:
+    app: ${Project}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${Project}
+  template:
+    metadata:
+      labels:
+        app: ${Project}
+    spec:
+      containers:
+      - name: ${Project}
+        image: ${AwsId}.dkr.ecr.${AwsRegion}.amazonaws.com/${Project}-kwi:${ImageTag}
+        
+        ports:
+        - name: ${Project}
+          containerPort: 80
+        env:
+          - name: APP_PORT
+            value: "${AppPort}"
+          - name: APP_SERVICE_HOST
+            value: "backend-service"
+      nodeSelector:
+        nodegroup-network: public
